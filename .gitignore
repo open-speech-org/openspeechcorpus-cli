@@ -1,0 +1,12 @@
+.idea/
+
+openspeechcorpus_env
+
+isolated_words
+isolated_words.txt
+aphasia
+aphasia.txt
+
+build
+dist
+openspeechcorpus.egg-info
