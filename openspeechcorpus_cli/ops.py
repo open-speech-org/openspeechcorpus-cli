@@ -47,6 +47,12 @@ def execute_from_command_line():
     )
 
     parser.add_argument(
+        "--corpus",
+        help="Name of the corpus [aphasia|words]",
+        default=""
+    )
+
+    parser.add_argument(
         "--s3_prefix",
         default="https://s3.amazonaws.com/contraslash/openspeechcorpus/media/audio-data/v2/"
     )
@@ -72,6 +78,20 @@ def execute_from_command_line():
 
     args = vars(parser.parse_args())
     url = args["url"]
+    corpus = args.get("corpus", "")
+    if corpus:
+        if corpus == "aphasia":
+            url = "http://openspeechcorpus.contraslash.com/api/words/list/"
+            args["text_node"] = "level_sentence"
+            print("Aphasia corpus selected, using URL: http://openspeechcorpus.contraslash.com/api/words/list/")
+        elif corpus == "words":
+            url = "http://openspeechcorpus.contraslash.com/api/isolated-words/list/"
+            args["text_node"] = "isolated_word"
+            print("Words corpus selected, using URL: http://openspeechcorpus.contraslash.com/api/isolated-words/list/")
+        else:
+            print("Unexisting corpus, valid options are: aphasia, words")
+            exit(1)
+
     if args["from"] is not None or args["to"] is not None:
         url += "?"
         if args["from"] is not None:

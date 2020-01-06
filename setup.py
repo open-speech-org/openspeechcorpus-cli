@@ -7,7 +7,7 @@ def readme():
 
 setup(
     name="openspeechcorpus",
-    version="0.0.1",
+    version="0.0.2",
     description="The CLI for perform actions over the Open Speech Corpus",
     long_description=readme(),
     long_description_content_type="text/markdown",
