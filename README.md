@@ -1,6 +1,9 @@
 # Open Speech Corpus CLI
 
-This repository contains the code required to download audiodata from openspeechcorpus.com
+This repository contains the code required to download audiodata from [openspeechcorpus.com](http://openspeechcorpus.contraslash.com)
+
+Open Speech Corpus is composed by far for three subcorpuses:
+
 
 
 To download files from the Isolated Words Project use
