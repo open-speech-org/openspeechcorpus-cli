@@ -4,7 +4,19 @@ This repository contains the code required to download audiodata from [openspeec
 
 Open Speech Corpus is composed by far for three subcorpuses:
 
+- Tales: A crowdsourced corpus based on reading of latin american short tales
+- Aphasia: A crowdsourced corpus based in words categorized in 4 levels of difficulty
+- Isolated words: A crowdsourced corpus based in isolated words
 
+
+To download files from the Tales Project use
+
+```bash
+ops  \
+    --output_folder tales/ \
+    --output_file tales.txt  \
+    --corpus tales
+```
 
 To download files from the Isolated Words Project use
 

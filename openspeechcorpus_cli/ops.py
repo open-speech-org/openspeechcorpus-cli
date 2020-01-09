@@ -75,12 +75,22 @@ def execute_from_command_line():
         help="Inner node containing text information",
         default="level_sentence"
     )
+    parser.add_argument(
+        "--force_create",
+        help="Force creation of output folder",
+        default=True
+    )
 
     args = vars(parser.parse_args())
     url = args["url"]
     corpus = args.get("corpus", "")
     if corpus:
-        if corpus == "aphasia":
+        if corpus == "tales":
+            url = "http://openspeechcorpus.contraslash.com/api/tale-sentences/list/"
+            args["text_node"] = "tale_sentence"
+            args["s3_prefix"] = "https://s3.amazonaws.com/contraslash/openspeechcorpus"
+            print("Aphasia corpus selected, using URL: http://openspeechcorpus.contraslash.com/api/tale-sentences/list/")
+        elif corpus == "aphasia":
             url = "http://openspeechcorpus.contraslash.com/api/words/list/"
             args["text_node"] = "level_sentence"
             print("Aphasia corpus selected, using URL: http://openspeechcorpus.contraslash.com/api/words/list/")
@@ -89,7 +99,7 @@ def execute_from_command_line():
             args["text_node"] = "isolated_word"
             print("Words corpus selected, using URL: http://openspeechcorpus.contraslash.com/api/isolated-words/list/")
         else:
-            print("Unexisting corpus, valid options are: aphasia, words")
+            print("Unexisting corpus, valid options are: tales, aphasia, words")
             exit(1)
 
     if args["from"] is not None or args["to"] is not None:
@@ -115,8 +125,12 @@ def execute_from_command_line():
             exit(2)
         output_file = open(args["output_file"], "w+")
         for audio_data in json_data:
-            audio_id = audio_data["audio"]["id"]
-            file_name = "{}.mp4".format(join(args["output_folder"], str(audio_id)))
+            if corpus == "tales":
+                audio_id = audio_data["audio"]["audiofile"].replace(".mp4", "")
+                file_name = "{}.mp4".format(join(args["output_folder"], str(audio_data["audio"]["id"])))
+            else:
+                audio_id = audio_data["audio"]["id"]
+                file_name = "{}.mp4".format(join(args["output_folder"], str(audio_id)))
             output_file.write("{},{}\n".format(file_name, audio_data[args["text_node"]]["text"].strip()))
             if not exists(file_name):
                 print("Download file with id: {}".format(audio_id))
