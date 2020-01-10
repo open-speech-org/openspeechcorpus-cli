@@ -9,6 +9,8 @@ from requests.exceptions import ConnectionError
 from os.path import exists, isdir, join
 from os import mkdir
 
+PAGE_SIZE = 500
+
 
 def download_file(url, local_filename):
     # Taken from here
@@ -21,6 +23,30 @@ def download_file(url, local_filename):
                 f.write(chunk)
                 #  f.flush() commented by recommendation from J.F.Sebastian
     return local_filename
+
+
+def download_files(json_data, corpus, output_folder, output_file, s3_prefix, text_node):
+    for audio_data in json_data:
+        print("Element: {}".format(audio_data["id"]))
+        if corpus == "tales":
+            audio_id = audio_data["audio"]["audiofile"].replace(".mp4", "")
+            file_name = "{}.mp4".format(join(output_folder, str(audio_data["audio"]["id"])))
+        else:
+            audio_id = audio_data["audio"]["id"]
+            file_name = "{}.mp4".format(join(output_folder, str(audio_id)))
+        output_file.write("{},{}\n".format(file_name, audio_data[text_node]["text"].strip()))
+        if not exists(file_name):
+            print("Download file: {}{}.mp4".format(s3_prefix, audio_id))
+            print("Saving into {}".format(file_name))
+            try:
+                download_file(
+                    "{}{}.mp4".format(s3_prefix, audio_id),
+                    file_name
+                )
+            except ConnectionError:
+                print("Error getting file {}".format(file_name))
+        else:
+            print("File {} already exists, skipping".format(file_name))
 
 
 def execute_from_command_line():
@@ -75,13 +101,21 @@ def execute_from_command_line():
         help="Inner node containing text information",
         default="level_sentence"
     )
+
     parser.add_argument(
         "--force_create",
         help="Force creation of output folder",
         default=True
     )
 
+    parser.add_argument(
+        "--download_all",
+        help="Download all the selected corpus",
+        action="store_true"
+    )
+
     args = vars(parser.parse_args())
+
     url = args["url"]
     corpus = args.get("corpus", "")
     if corpus:
@@ -102,47 +136,51 @@ def execute_from_command_line():
             print("Unexisting corpus, valid options are: tales, aphasia, words")
             exit(1)
 
-    if args["from"] is not None or args["to"] is not None:
-        url += "?"
-        if args["from"] is not None:
-            url += "from={}&".format(args["from"])
-        if args["to"] is not None:
-            url += "to={}".format(args["to"])
-    print("Querying {}".format(url))
-    response = requests.get(url)
-    if response.status_code == 200:
-        json_data = json.loads(response.content.decode())
-        print("We get {} audio datas".format(len(json_data)))
-        if not exists(args["output_folder"]):
-            print("Output folder does not exists")
-            if args["force_create"]:
-                print("force_create flag detected, creating {}".format(args["output_folder"]))
-                mkdir(args["output_folder"])
-            else:
-                exit(1)
-        if not isdir(args["output_folder"]):
-            print("Output folder exists exists but is not a folder")
-            exit(2)
-        output_file = open(args["output_file"], "w+")
-        for audio_data in json_data:
-            if corpus == "tales":
-                audio_id = audio_data["audio"]["audiofile"].replace(".mp4", "")
-                file_name = "{}.mp4".format(join(args["output_folder"], str(audio_data["audio"]["id"])))
-            else:
-                audio_id = audio_data["audio"]["id"]
-                file_name = "{}.mp4".format(join(args["output_folder"], str(audio_id)))
-            output_file.write("{},{}\n".format(file_name, audio_data[args["text_node"]]["text"].strip()))
-            if not exists(file_name):
-                print("Download file with id: {}".format(audio_id))
-                print("{}{}.mp4".format(args["s3_prefix"], audio_id))
-                try:
-                    download_file(
-                        "{}{}.mp4".format(args["s3_prefix"], audio_id),
-                        file_name
-                    )
-                except ConnectionError:
-                    print("Error getting file {}".format(file_name))
+    if not exists(args["output_folder"]):
+        print("Output folder does not exists")
+        if args["force_create"]:
+            print("force_create flag detected, creating {}".format(args["output_folder"]))
+            mkdir(args["output_folder"])
+        else:
+            exit(1)
+    if not isdir(args["output_folder"]):
+        print("Output folder exists exists but is not a folder")
+        exit(2)
+
+    output_file = open(args["output_file"], "w+")
+    if args.get("download_all", False):
+        actual_index = args["from"]
+        print("Downloading whole corpus, starting in {}".format(actual_index))
+        actual_url = "{}?from={}&to={}".format(url, actual_index, actual_index+PAGE_SIZE)
+        print("Querying {}".format(actual_url))
+        response = requests.get(actual_url)
+        while response.status_code == 200 and response.json():
+            json_data = response.json()
+            print("We get {} audio datas".format(len(json_data)))
+            try:
+                download_files(json_data, corpus, args["output_folder"], output_file, args["s3_prefix"], args["text_node"])
+            except KeyboardInterrupt:
+                print("Process interrupting, finishing gracefully")
+                output_file.close()
+                exit(0)
+            actual_index += PAGE_SIZE
+            actual_url = "{}?from={}&to={}".format(url, actual_index, actual_index + PAGE_SIZE)
+            print("Querying {}".format(actual_url))
+            response = requests.get(actual_url)
         output_file.close()
     else:
-        print("Cannot connect to server, response status was {}".format(response.status_code))
-
+        print("Downloading segment from {} to {}".format(args["from"], args["to"]))
+        url = "{}?from={}&to={}".format(url, args["from"], args["to"])
+        print("Querying {}".format(url))
+        response = requests.get(url)
+        if response.status_code == 200:
+            json_data = response.json()
+            print("We get {} audio datas".format(len(json_data)))
+            try:
+                download_files(json_data, corpus, args["output_folder"], output_file, args["s3_prefix"], args["text_node"])
+            except KeyboardInterrupt:
+                print("Process interrupting, finishing gracefully")
+            finally:
+                output_file.close()
+        else:
+            print("Cannot connect to server, response status was {}".format(response.status_code))

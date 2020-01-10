@@ -47,3 +47,16 @@ ops  \
     --output_file aphasia.txt  \
     --corpus aphasia
 ```
+
+You can download the whole corpus using the flag `--download_all`
+
+```bash
+ops  \
+    --output_folder aphasia/ \
+    --output_file aphasia.txt  \
+    --corpus aphasia \
+    --download_all
+```
+
+If you use the flag `--download_all` with the flag `--from` the process will start in the specified arg `from` using a
+page size of 500
