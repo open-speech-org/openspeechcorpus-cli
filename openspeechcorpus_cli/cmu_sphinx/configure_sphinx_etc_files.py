@@ -49,12 +49,20 @@ def execute_from_command_line():
         default=0.3
     )
 
+    parser.add_argument(
+        "--ignore_wav_missing",
+        action="store_true",
+        help="In case you have already the wav folder populated for CMU Sphinx Train, this flag ensures all the fileids"
+             "in the transcriptions files effectively exists."
+    )
+
     args = vars(parser.parse_args())
 
     project_name = args["project_name"]
     transcript_file = args["transcription_file"]
     etc_folder_name = args["etc_folder"]
     test_size = args["test_size"]
+    ignore_wav_missing = args.get("ignore_wav_missing", False)
     # Configuration Folder
     if not os.path.exists(etc_folder_name):
         print("Creating etc folder")
@@ -92,5 +100,6 @@ def execute_from_command_line():
         etc_folder_name,
         project_name,
         transcript_file,
-        test_size
+        test_size,
+        ignore_wav_missing
     )

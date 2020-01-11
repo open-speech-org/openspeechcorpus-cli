@@ -8,7 +8,7 @@ def readme():
 
 setup(
     name="openspeechcorpus",
-    version="0.1.2",
+    version="0.1.3",
     description="The CLI for perform actions over the Open Speech Corpus",
     long_description=readme(),
     long_description_content_type="text/markdown",
@@ -33,7 +33,8 @@ setup(
     scripts=[
         "openspeechcorpus_cli/bin/ops",
         "openspeechcorpus_cli/bin/recursive_convert",
-        "openspeechcorpus_cli/bin/configure_sphinx"
+        "openspeechcorpus_cli/bin/configure_sphinx",
+        "openspeechcorpus_cli/bin/clean_previous_configuration",
     ],
     zip_safe=False,
     include_package_data=True,

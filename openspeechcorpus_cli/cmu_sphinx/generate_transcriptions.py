@@ -19,7 +19,7 @@ def remove_extensions(word):
     return word
 
 
-def execute_script(etc_folder_name, name, transcription_file, test_samples_coefficient):
+def execute_script(etc_folder_name, name, transcription_file, test_samples_coefficient, ignore_wav_missing=False):
 
     transcription_full_file = os.path.join(etc_folder_name, "{}.transcription".format(name))
     train_file = os.path.join(etc_folder_name, "{}_train.transcription".format(name))
@@ -73,7 +73,11 @@ def execute_script(etc_folder_name, name, transcription_file, test_samples_coeff
         )
 
         transcription_plus_id = "{} ({})\n".format(line_transcription_content, line_id_content)
-
+        if ignore_wav_missing:
+            path_to_check = os.path.join(etc_folder_name, "../wav/", "{}.wav".format(line_id_content))
+            if not os.path.exists(path_to_check):
+                print("Path {} Does not exits, skipping".format(path_to_check))
+                continue
         line_id_content = "{}\n".format(line_id_content)
         line_transcription_content = "{}\n".format(line_transcription_content)
 
