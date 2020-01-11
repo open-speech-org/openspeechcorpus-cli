@@ -4,10 +4,15 @@ openspeechcorpus_env
 
 isolated_words
 isolated_words.txt
+words
+words.txt
 aphasia
 aphasia.txt
 tales
 tales.txt
+
+source_folder
+transform_folder
 
 build
 dist

@@ -103,12 +103,6 @@ def execute_from_command_line():
     )
 
     parser.add_argument(
-        "--force_create",
-        help="Force creation of output folder",
-        default=True
-    )
-
-    parser.add_argument(
         "--download_all",
         help="Download all the selected corpus",
         action="store_true"
@@ -138,14 +132,11 @@ def execute_from_command_line():
 
     if not exists(args["output_folder"]):
         print("Output folder does not exists")
-        if args["force_create"]:
-            print("force_create flag detected, creating {}".format(args["output_folder"]))
-            mkdir(args["output_folder"])
-        else:
-            exit(1)
+        print("force_create flag detected, creating {}".format(args["output_folder"]))
+        mkdir(args["output_folder"])
     if not isdir(args["output_folder"]):
         print("Output folder exists exists but is not a folder")
-        exit(2)
+        exit(1)
 
     output_file = open(args["output_file"], "w+")
     if args.get("download_all", False):
