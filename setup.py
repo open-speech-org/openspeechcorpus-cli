@@ -8,7 +8,7 @@ def readme():
 
 setup(
     name="openspeechcorpus",
-    version="0.1.1",
+    version="0.1.2",
     description="The CLI for perform actions over the Open Speech Corpus",
     long_description=readme(),
     long_description_content_type="text/markdown",
@@ -26,10 +26,14 @@ setup(
     install_requires=[
         "requests>=2.22.0"
     ],
-    packages=["openspeechcorpus_cli"],
+    packages=[
+        "openspeechcorpus_cli",
+        "openspeechcorpus_cli.cmu_sphinx"
+    ],
     scripts=[
         "openspeechcorpus_cli/bin/ops",
-        "openspeechcorpus_cli/bin/recursive_convert"
+        "openspeechcorpus_cli/bin/recursive_convert",
+        "openspeechcorpus_cli/bin/configure_sphinx"
     ],
     zip_safe=False,
     include_package_data=True,

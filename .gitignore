@@ -14,6 +14,8 @@ tales.txt
 source_folder
 transform_folder
 
+simple_words
+
 build
 dist
 openspeechcorpus.egg-info

@@ -71,3 +71,14 @@ the output folder i.e.:
 recursive_convert aphasia aphasia_wav
 ```
 
+## CMU Sphinx Configuration
+
+The Open Speech Corpus also defines some scripts to generate configurations for 
+[CMU Sphinx](https://cmusphinx.github.io/), to generate a configuration use the command `configure_sphinx`
+
+```bash
+configure_sphinx simple_words \
+    --transcription_file words.txt \
+    --etc_folder simple_words/etc \
+    --test_size 0.5
+```
