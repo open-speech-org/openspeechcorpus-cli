@@ -74,11 +74,32 @@ recursive_convert aphasia aphasia_wav
 ## CMU Sphinx Configuration
 
 The Open Speech Corpus also defines some scripts to generate configurations for 
-[CMU Sphinx](https://cmusphinx.github.io/), to generate a configuration use the command `configure_sphinx`
+[CMU Sphinx](https://cmusphinx.github.io/).
+ 
+First initialize a project with the `sphinx_train` command
+
+```bash
+sphinxtrain -t simple_words setup
+```
+   
+To generate a configuration use the command `configure_sphinx`, which creates the transcription, fileids, fillers and
+dic files.
 
 ```bash
 configure_sphinx simple_words \
     --transcription_file words.txt \
     --etc_folder simple_words/etc \
     --test_size 0.5
+```
+
+Also you need to define a language model which receives the DB_NAME and the base project folder
+
+```bash
+generate_language_model simple_words simple_words
+```
+
+To delete the configuration files use the command `clean_previous_configuration`
+
+```bash
+clean_previous_configuration simple_words --etc_folder simple_words/etc/
 ```
