@@ -36,16 +36,9 @@ ops  \
     --corpus aphasia
 ```
 
-By default the page size is 500, to modify it use the args `--from` and `--to` i.e:
+## Parameters ussage
 
-```bash
-ops  \
-    --from 500 \
-    --to 1000 \
-    --output_folder aphasia/ \
-    --output_file aphasia.txt  \
-    --corpus aphasia
-```
+### `--download_all`
 
 You can download the whole corpus using the flag `--download_all`
 
@@ -57,8 +50,35 @@ ops  \
     --download_all
 ```
 
+### `--from` and `--to`
+
+By default the page size is 500, to modify it use the args `--from` and `--to` i.e:
+
+```bash
+ops  \
+    --from 500 \
+    --to 1000 \
+    --output_folder aphasia/ \
+    --output_file aphasia.txt  \
+    --corpus aphasia
+```
+
+
 If you use the flag `--download_all` with the flag `--from` the process will start in the specified arg `from` using a
 page size of 500
+
+### `--extra_query_params`
+
+We also support an argument `--extra_query_params` which overwrites the `--from`, `--to` and `--download_all` arguments
+and downloads all files in the body response, you must define the `--corpus` argument anyway
+
+```bash
+ops  \
+    --output_folder aphasia/ \
+    --output_file aphasia_letters.txt  \
+    --corpus aphasia \
+    --extra_query_params "level_sentence__id__gte=846&level_sentence__id__lte=870"
+```
 
 ## Recursive Convert
 

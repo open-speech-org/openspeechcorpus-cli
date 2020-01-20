@@ -49,6 +49,16 @@ def download_files(json_data, corpus, output_folder, output_file, s3_prefix, tex
             print("File {} already exists, skipping".format(file_name))
 
 
+def process_single_url(url, corpus, output_folder, output_file, s3_prefix, text_node):
+    response = requests.get(url)
+    if response.status_code == 200:
+        json_data = response.json()
+        print("We get {} audio datas".format(len(json_data)))
+        download_files(json_data, corpus, output_folder, output_file, s3_prefix, text_node)
+    else:
+        print("Cannot connect to server, response status was {}".format(response.status_code))
+
+
 def execute_from_command_line():
     parser = argparse.ArgumentParser(
         "Download files from Open Speech Corpus"
@@ -74,7 +84,7 @@ def execute_from_command_line():
 
     parser.add_argument(
         "--corpus",
-        help="Name of the corpus [aphasia|words]",
+        help="Name of the corpus [tales|aphasia|words]",
         default=""
     )
 
@@ -108,6 +118,11 @@ def execute_from_command_line():
         action="store_true"
     )
 
+    parser.add_argument(
+        "--extra_query_params",
+        help="This argument overwrites `--from`, `to` and `download_all` and downloads all files in the body response"
+    )
+
     args = vars(parser.parse_args())
 
     url = args["url"]
@@ -129,6 +144,9 @@ def execute_from_command_line():
         else:
             print("Unexisting corpus, valid options are: tales, aphasia, words")
             exit(1)
+    else:
+        print("No corpus selected, exiting")
+        exit(2)
 
     if not exists(args["output_folder"]):
         print("Output folder does not exists")
@@ -139,39 +157,33 @@ def execute_from_command_line():
         exit(1)
 
     output_file = open(args["output_file"], "w+")
-    if args.get("download_all", False):
-        actual_index = args["from"]
-        print("Downloading whole corpus, starting in {}".format(actual_index))
-        actual_url = "{}?from={}&to={}".format(url, actual_index, actual_index+PAGE_SIZE)
-        print("Querying {}".format(actual_url))
-        response = requests.get(actual_url)
-        while response.status_code == 200 and response.json():
-            json_data = response.json()
-            print("We get {} audio datas".format(len(json_data)))
-            try:
-                download_files(json_data, corpus, args["output_folder"], output_file, args["s3_prefix"], args["text_node"])
-            except KeyboardInterrupt:
-                print("Process interrupting, finishing gracefully")
-                output_file.close()
-                exit(0)
-            actual_index += PAGE_SIZE
-            actual_url = "{}?from={}&to={}".format(url, actual_index, actual_index + PAGE_SIZE)
+    try:
+        if args.get("extra_query_params"):
+            print("Downloading with extra params: {}".format(args["extra_query_params"]))
+            url = "{}?{}".format(url, args["extra_query_params"])
+            print("Querying {}".format(url))
+            process_single_url(url, corpus, args["output_folder"], output_file, args["s3_prefix"], args["text_node"])
+        elif args.get("download_all", False):
+            actual_index = args["from"]
+            print("Downloading whole corpus, starting in {}".format(actual_index))
+            actual_url = "{}?from={}&to={}".format(url, actual_index, actual_index+PAGE_SIZE)
             print("Querying {}".format(actual_url))
             response = requests.get(actual_url)
-        output_file.close()
-    else:
-        print("Downloading segment from {} to {}".format(args["from"], args["to"]))
-        url = "{}?from={}&to={}".format(url, args["from"], args["to"])
-        print("Querying {}".format(url))
-        response = requests.get(url)
-        if response.status_code == 200:
-            json_data = response.json()
-            print("We get {} audio datas".format(len(json_data)))
-            try:
+            while response.status_code == 200 and response.json():
+                json_data = response.json()
+                print("We get {} audio datas".format(len(json_data)))
                 download_files(json_data, corpus, args["output_folder"], output_file, args["s3_prefix"], args["text_node"])
-            except KeyboardInterrupt:
-                print("Process interrupting, finishing gracefully")
-            finally:
-                output_file.close()
+                actual_index += PAGE_SIZE
+                actual_url = "{}?from={}&to={}".format(url, actual_index, actual_index + PAGE_SIZE)
+                print("Querying {}".format(actual_url))
+                response = requests.get(actual_url)
+            output_file.close()
         else:
-            print("Cannot connect to server, response status was {}".format(response.status_code))
+            print("Downloading segment from {} to {}".format(args["from"], args["to"]))
+            url = "{}?from={}&to={}".format(url, args["from"], args["to"])
+            print("Querying {}".format(url))
+            process_single_url(url, corpus, args["output_folder"], output_file, args["s3_prefix"], args["text_node"])
+    except KeyboardInterrupt:
+        print("Process interrupting, finishing gracefully")
+    finally:
+        output_file.close()

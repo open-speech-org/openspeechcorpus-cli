@@ -16,6 +16,8 @@ transform_folder
 
 simple_words
 
+aphasia_letters.txt
+
 build
 dist
 openspeechcorpus.egg-info
