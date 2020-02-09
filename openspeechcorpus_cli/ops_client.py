@@ -19,6 +19,8 @@ class OPSClient (object):
     _output_folder = None
     _output_file = None
 
+    DEFAULT_PAGE_SIZE = 500
+
     def __init__(
             self,
             corpus,
@@ -60,6 +62,7 @@ class OPSClient (object):
             LOGGER.info("We get {} audio datas".format(len(json_data)))
             LOGGER.debug(json_data)
             self._download_files(json_data)
+            return json_data
         else:
             LOGGER.info("Cannot connect to server, response status was {}".format(response.status_code))
 
@@ -91,10 +94,19 @@ class OPSClient (object):
         Download using the specified query params
         """
         LOGGER.info(f"Downloading with extra params: {extra_query_params}")
-        self._process_single_url(extra_query_params)
-
+        return self._process_single_url(extra_query_params)
 
     def download_all(self, _from=1):
-        pass
+        initial_extra_params = "from={}&to={}".format(_from, _from + self.DEFAULT_PAGE_SIZE)
+        page = self._process_single_url(initial_extra_params)
+        total_pages = page
+        while page:
+            _from = _from + self.DEFAULT_PAGE_SIZE
+            extra_params = "from={}&to={}".format(_from, _from + self.DEFAULT_PAGE_SIZE)
+            page = self._process_single_url(extra_params)
+            total_pages.extend(page)
+        return total_pages
 
-
+    def download_segment(self, _from=1, _to=500):
+        extra_params = "from={}&to={}".format(_from, _to)
+        return self._process_single_url(extra_params)
