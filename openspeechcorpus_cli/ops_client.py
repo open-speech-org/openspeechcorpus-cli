@@ -65,6 +65,7 @@ class OPSClient (object):
             return json_data
         else:
             LOGGER.info("Cannot connect to server, response status was {}".format(response.status_code))
+            return None
 
     def _download_files(self, json_data):
         for audio_data in json_data:
