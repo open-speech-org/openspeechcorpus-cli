@@ -20,11 +20,12 @@ class OPSClient (object):
     _output_file = None
 
     DEFAULT_PAGE_SIZE = 500
+    FILE_ALREADY_EXISTS_STATUS_MESSAGE = "file_already_exists"
+    PROBLEM_DOWNLOADING_FILE_STATUS_MESSAGE = "problem_downloading"
 
     def __init__(
             self,
             corpus,
-            extra_query_params,
             output_folder,
             output_file
     ):
@@ -65,8 +66,10 @@ class OPSClient (object):
             return json_data
         else:
             LOGGER.info("Cannot connect to server, response status was {}".format(response.status_code))
+            return None
 
     def _download_files(self, json_data):
+        download_status = dict()
         for audio_data in json_data:
             LOGGER.info("Element: {}".format(audio_data["id"]))
             if self._corpus == "tales":
@@ -80,14 +83,17 @@ class OPSClient (object):
                 LOGGER.info("Download file: {}{}.mp4".format(self._s3_prefix, audio_id))
                 LOGGER.info("Saving into {}".format(file_name))
                 try:
-                    download_file(
+                    download_status[audio_id] = download_file(
                         "{}{}.mp4".format(self._s3_prefix, audio_id),
                         file_name
                     )
                 except ConnectionError:
+                    download_status[audio_id] = self.PROBLEM_DOWNLOADING_FILE_STATUS_MESSAGE
                     LOGGER.error("Error getting file {}".format(file_name))
             else:
+                download_status[audio_id] = self.FILE_ALREADY_EXISTS_STATUS_MESSAGE
                 LOGGER.info("File {} already exists, skipping".format(file_name))
+        return download_status
 
     def download_with_extra_query_params(self, extra_query_params):
         """
