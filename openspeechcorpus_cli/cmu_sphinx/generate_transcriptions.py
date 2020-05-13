@@ -8,7 +8,7 @@ pruebas, junto con su archivo de nombres
 import os
 import codecs
 import random
-from openspeechcorpus_cli.cmu_sphinx.common_filters import *
+from openspeechcorpus_cli.utils.common_filters import *
 
 
 def remove_extensions(word):

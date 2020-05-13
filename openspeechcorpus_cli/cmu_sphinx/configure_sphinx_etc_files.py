@@ -3,21 +3,12 @@
 import os
 import argparse
 
+from openspeechcorpus_cli.utils import execute_script_with_args_if_file_does_not_exists
+
 from openspeechcorpus_cli.cmu_sphinx import generate_dict
 from openspeechcorpus_cli.cmu_sphinx import generate_phone_set_from_dict
 from openspeechcorpus_cli.cmu_sphinx import generate_filler
 from openspeechcorpus_cli.cmu_sphinx import generate_transcriptions
-
-
-def execute_script_with_args_if_file_does_not_exists(script, file, *args):
-    # print(script)
-    # print(file)
-    # print(args)
-    if not os.path.exists(file):
-        print("Creating {}".format(file))
-        script(*args)
-    else:
-        print("{} already exists".format(file))
 
 
 def execute_from_command_line():

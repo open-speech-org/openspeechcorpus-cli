@@ -1,4 +1,6 @@
 
+STOP_SYMBOLS = r'[:; ,\n\r()¿¡!]'
+
 def clean_accents(word):
     output = []
     for letter in word:

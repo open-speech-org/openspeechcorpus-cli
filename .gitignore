@@ -1,4 +1,5 @@
 .idea/
+__pycache__
 
 openspeechcorpus_env
 
@@ -21,3 +22,5 @@ aphasia_letters.txt
 build
 dist
 openspeechcorpus.egg-info
+
+words_grammar_htk
