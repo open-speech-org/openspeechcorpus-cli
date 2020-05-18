@@ -123,3 +123,9 @@ To delete the configuration files use the command `clean_previous_configuration`
 ```bash
 clean_previous_configuration simple_words --etc_folder simple_words/etc/
 ```
+
+## HTK Configuration
+
+The Open Speech Corpus also defines some scripts to train models using [HTK](http://htk.eng.cam.ac.uk/)
+
+To generate a word grammar use 

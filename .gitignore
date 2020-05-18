@@ -1,8 +1,10 @@
 .idea/
 __pycache__
 
+# Virtual Environment
 openspeechcorpus_env
 
+# Downloaded corpus
 isolated_words
 isolated_words.txt
 words
@@ -11,16 +13,19 @@ aphasia
 aphasia.txt
 tales
 tales.txt
-
-source_folder
-transform_folder
-
-simple_words
-
 aphasia_letters.txt
 
+# CMU Sphinx folders
+source_folder
+transform_folder
+simple_words
+
+
+# Build
 build
 dist
 openspeechcorpus.egg-info
 
+# HTK
 words_grammar_htk
+words_sorted.list

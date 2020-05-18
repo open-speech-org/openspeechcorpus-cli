@@ -5,10 +5,12 @@ import argparse
 
 from openspeechcorpus_cli.utils import execute_script_with_args_if_file_does_not_exists
 
-from openspeechcorpus_cli.cmu_sphinx import generate_dict
-from openspeechcorpus_cli.cmu_sphinx import generate_phone_set_from_dict
-from openspeechcorpus_cli.cmu_sphinx import generate_filler
-from openspeechcorpus_cli.cmu_sphinx import generate_transcriptions
+from openspeechcorpus_cli.cmu_sphinx import (
+    generate_dict,
+    generate_phone_set_from_dict,
+    generate_filler,
+    generate_transcriptions,
+)
 
 
 def execute_from_command_line():
