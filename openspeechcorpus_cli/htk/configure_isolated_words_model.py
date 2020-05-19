@@ -10,6 +10,7 @@ from openspeechcorpus_cli.htk import (
     generate_isolated_words_grammar,
     generate_list_words,
     generate_phone_level_master_labeled_file,
+    generate_config_file,
 )
 
 
@@ -75,4 +76,11 @@ def execute_from_command_line():
         master_label_file_path,
         transcript_file,
         master_label_file_path,
+    )
+    # config
+    config_file_path = os.path.join(project_folder_name, f"config")
+    execute_script_with_args_if_file_does_not_exists(
+        generate_config_file.execute_script,
+        config_file_path,
+        config_file_path
     )
