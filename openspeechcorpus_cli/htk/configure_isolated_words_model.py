@@ -9,6 +9,7 @@ from openspeechcorpus_cli.utils import execute_script_with_args_if_file_does_not
 from openspeechcorpus_cli.htk import (
     generate_isolated_words_grammar,
     generate_list_words,
+    generate_phone_level_master_labeled_file,
 )
 
 
@@ -40,8 +41,7 @@ def execute_from_command_line():
     project_name = args["project_name"]
     transcript_file = args["transcription_file"]
     project_folder_name = args["project_folder"]
-    test_size = args["test_size"]
-    ignore_wav_missing = args.get("ignore_wav_missing", False)
+
     # Configuration Folder
     if not os.path.exists(project_folder_name):
         print("Creating project folder")
@@ -50,6 +50,29 @@ def execute_from_command_line():
     else:
         print("Project folder already created, skipping")
 
-    generate_list_words.execute_script(transcript_file, f"{project_name}.words_sorted.list")
+    # Word list
+    words_list_path = os.path.join(project_folder_name, f"{project_name}.words_sorted.list")
+    execute_script_with_args_if_file_does_not_exists(
+        generate_list_words.execute_script,
+        words_list_path,
+        transcript_file,
+        words_list_path,
+    )
 
-    generate_isolated_words_grammar.execute_script(transcript_file, f"{project_name}.words_grammar")
+    # Single word grammar
+    words_grammar_path = os.path.join(project_folder_name, f"{project_name}.words_grammar")
+    execute_script_with_args_if_file_does_not_exists(
+        generate_isolated_words_grammar.execute_script,
+        words_grammar_path,
+        transcript_file,
+        words_grammar_path,
+    )
+
+    # MLF
+    master_label_file_path = os.path.join(project_folder_name, f"{project_name}.mlf")
+    execute_script_with_args_if_file_does_not_exists(
+        generate_phone_level_master_labeled_file.execute_script,
+        master_label_file_path,
+        transcript_file,
+        master_label_file_path,
+    )

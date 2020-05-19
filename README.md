@@ -131,7 +131,8 @@ The Open Speech Corpus also defines some scripts to train models using [HTK](htt
 To generate a word grammar use 
 
 ```bash
-python configure_htk \
+configure_htk \
     --transcription_file words.txt \
     --project_folder htk_words
+    htk_words
 ```

@@ -25,13 +25,13 @@ def clean_accents(word):
 def filter_special_characters(word):
     output = []
     for letter in word:
-        if letter == u"-":
+        if letter == "-":
             modified_letter = ""
-        elif letter == u"\n":
+        elif letter == "\n":
             modified_letter = ""
-        elif letter == u"\.":
+        elif letter == "\.":
             modified_letter = ""
-        elif letter == u"?":
+        elif letter == "?":
             modified_letter = ""
         else:
             modified_letter = letter

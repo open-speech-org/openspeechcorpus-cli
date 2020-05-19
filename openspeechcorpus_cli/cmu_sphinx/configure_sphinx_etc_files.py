@@ -79,6 +79,7 @@ def execute_from_command_line():
         phone_file
     )
 
+    # Filler file
     filler_file = os.path.join(etc_folder_name, "{}.filler".format(project_name))
     execute_script_with_args_if_file_does_not_exists(
         generate_filler.execute_script,
@@ -86,6 +87,7 @@ def execute_from_command_line():
         filler_file,
     )
 
+    # Transcriptions file
     fileids_file = os.path.join(etc_folder_name, "{}.fileids".format(project_name))
     execute_script_with_args_if_file_does_not_exists(
         generate_transcriptions.execute_script,

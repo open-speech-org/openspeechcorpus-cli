@@ -8,7 +8,7 @@ def readme():
 
 setup(
     name="openspeechcorpus",
-    version="0.1.6",
+    version="0.2.0",
     description="The CLI for perform actions over the Open Speech Corpus",
     long_description=readme(),
     long_description_content_type="text/markdown",
@@ -28,7 +28,9 @@ setup(
     ],
     packages=[
         "openspeechcorpus_cli",
-        "openspeechcorpus_cli.cmu_sphinx"
+        "openspeechcorpus_cli.cmu_sphinx",
+        "openspeechcorpus_cli.htk",
+        "openspeechcorpus_cli.utils",
     ],
     scripts=[
         "openspeechcorpus_cli/bin/ops",
