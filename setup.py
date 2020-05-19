@@ -36,6 +36,7 @@ setup(
         "openspeechcorpus_cli/bin/configure_sphinx",
         "openspeechcorpus_cli/bin/clean_previous_configuration",
         "openspeechcorpus_cli/bin/generate_language_model",
+        "openspeechcorpus_cli/bin/configure_htk",
     ],
     zip_safe=False,
     include_package_data=True,

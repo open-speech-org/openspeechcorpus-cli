@@ -29,3 +29,6 @@ openspeechcorpus.egg-info
 # HTK
 words_grammar_htk
 words_sorted.list
+
+
+htk_words

@@ -11,6 +11,7 @@ from openspeechcorpus_cli.htk import (
     generate_list_words,
 )
 
+
 def execute_from_command_line():
     parser = argparse.ArgumentParser(
         "Configure HTK configuration files"
@@ -43,6 +44,12 @@ def execute_from_command_line():
     ignore_wav_missing = args.get("ignore_wav_missing", False)
     # Configuration Folder
     if not os.path.exists(project_folder_name):
-        print("Creating etc folder")
+        print("Creating project folder")
         os.makedirs(project_folder_name)
-        print("etc folder created")
+        print("project folder created")
+    else:
+        print("Project folder already created, skipping")
+
+    generate_list_words.execute_script(transcript_file, f"{project_name}.words_sorted.list")
+
+    generate_isolated_words_grammar.execute_script(transcript_file, f"{project_name}.words_grammar")
