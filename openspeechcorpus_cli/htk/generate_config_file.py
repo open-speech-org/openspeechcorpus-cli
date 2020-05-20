@@ -4,6 +4,7 @@ def write_boolean(boolean):
 
 def execute_script(
         output_file,
+        source_format='WAV',
         target_kind='MFCC_0',
         target_rate=100000.0,
         save_compressed=True,
@@ -18,8 +19,9 @@ def execute_script(
 ):
     output_file = open(output_file, 'w+')
     output_file.write(
-f"""TARGETKIND = {target_kind}
-TARGET_RATE = {target_rate}
+f"""SOURCEFORMAT = {source_format}
+TARGETKIND = {target_kind}
+TARGETRATE = {target_rate}
 SAVECOMPRESSED = {write_boolean(save_compressed)}
 SAVEWITHRC = {write_boolean(save_with_rc)}
 WINDOWSIZE = {window_size}

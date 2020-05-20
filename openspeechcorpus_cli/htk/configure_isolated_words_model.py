@@ -11,6 +11,8 @@ from openspeechcorpus_cli.htk import (
     generate_list_words,
     generate_phone_level_master_labeled_file,
     generate_config_file,
+    generate_features_map_file,
+    generate_prototype
 )
 
 
@@ -34,7 +36,13 @@ def execute_from_command_line():
     parser.add_argument(
         "--project_folder",
         default="htk_config",
-        help="etc folder for Sphinx train"
+        help="Configuration folder for htk"
+    )
+
+    parser.add_argument(
+        "--wav_folder",
+        default="wav",
+        help="wav folder for with audios"
     )
 
     args = vars(parser.parse_args())
@@ -42,6 +50,7 @@ def execute_from_command_line():
     project_name = args["project_name"]
     transcript_file = args["transcription_file"]
     project_folder_name = args["project_folder"]
+    wav_folder = args["wav_folder"]
 
     # Configuration Folder
     if not os.path.exists(project_folder_name):
@@ -83,4 +92,35 @@ def execute_from_command_line():
         generate_config_file.execute_script,
         config_file_path,
         config_file_path
+    )
+
+    # codetr
+    codectr_file_path = os.path.join(project_folder_name, f"codetr.scp")
+    execute_script_with_args_if_file_does_not_exists(
+        generate_features_map_file.execute_script,
+        codectr_file_path,
+        transcript_file,
+        codectr_file_path,
+        wav_folder,
+        project_folder_name
+    )
+
+    # train
+    train_file_path = os.path.join(project_folder_name, f"train.scp")
+    execute_script_with_args_if_file_does_not_exists(
+        generate_features_map_file.execute_script,
+        train_file_path,
+        transcript_file,
+        train_file_path,
+        wav_folder,
+        project_folder_name,
+        False
+    )
+
+    # proto
+    proto_file_path = os.path.join(project_folder_name, f"proto")
+    execute_script_with_args_if_file_does_not_exists(
+        generate_prototype.execute_script,
+        proto_file_path,
+        proto_file_path,
     )
