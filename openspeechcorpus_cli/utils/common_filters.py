@@ -1,20 +1,21 @@
 
 STOP_SYMBOLS = r'[:; ,\n\r()¿¡!]'
 
+
 def clean_accents(word):
     output = []
     for letter in word:
-        if letter == u"á":
+        if letter == "á":
             modified_letter = "a"
-        elif letter == u"é":
+        elif letter == "é":
             modified_letter = "e"
-        elif letter == u"í":
+        elif letter == "í":
             modified_letter = "i"
-        elif letter == u"ó":
+        elif letter == "ó":
             modified_letter = "o"
-        elif letter == u"ú":
+        elif letter == "ú":
             modified_letter = "u"
-        elif letter == u"ñ":
+        elif letter == "ñ":
             modified_letter = "N"
         else:
             modified_letter = letter

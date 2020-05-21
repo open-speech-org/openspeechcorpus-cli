@@ -12,7 +12,10 @@ from openspeechcorpus_cli.htk import (
     generate_phone_level_master_labeled_file,
     generate_config_file,
     generate_features_map_file,
-    generate_prototype
+    generate_prototype,
+    generate_list_phonemes,
+    generate_dict,
+    generate_word_level_master_labeled_file
 )
 
 
@@ -68,6 +71,23 @@ def execute_from_command_line():
         transcript_file,
         words_list_path,
     )
+    # phoneme list
+    phonemes_list_path = os.path.join(project_folder_name, f"{project_name}.phonemes_sorted.list")
+    execute_script_with_args_if_file_does_not_exists(
+        generate_list_phonemes.execute_script,
+        phonemes_list_path,
+        transcript_file,
+        phonemes_list_path,
+    )
+
+    # dict
+    dict_list_path = os.path.join(project_folder_name, f"{project_name}.dict")
+    execute_script_with_args_if_file_does_not_exists(
+        generate_dict.execute_script,
+        dict_list_path,
+        transcript_file,
+        dict_list_path,
+    )
 
     # Single word grammar
     words_grammar_path = os.path.join(project_folder_name, f"{project_name}.words_grammar")
@@ -85,6 +105,13 @@ def execute_from_command_line():
         master_label_file_path,
         transcript_file,
         master_label_file_path,
+    )
+    master_word_label_file_path = os.path.join(project_folder_name, f"{project_name}.word.mlf")
+    execute_script_with_args_if_file_does_not_exists(
+        generate_word_level_master_labeled_file.execute_script,
+        master_word_label_file_path,
+        transcript_file,
+        master_word_label_file_path,
     )
     # config
     config_file_path = os.path.join(project_folder_name, f"config")
@@ -123,4 +150,14 @@ def execute_from_command_line():
         generate_prototype.execute_script,
         proto_file_path,
         proto_file_path,
+    )
+
+    # config
+    config_with_deltas_file_path = os.path.join(project_folder_name, f"config.deltas")
+    execute_script_with_args_if_file_does_not_exists(
+        generate_config_file.execute_script,
+        config_with_deltas_file_path,
+        config_with_deltas_file_path,
+        source_format="HTK",
+        target_kind="MFCC_0_D_A"
     )

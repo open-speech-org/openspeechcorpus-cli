@@ -8,13 +8,11 @@ def execute_script(transcription_file, output_file, phonetic_annotator=extract_p
     output_file.write("#!MLF!#\n")
     for file_name, transcription in transcriptions:
         output_file.write(f'"*/{file_name}.lab"\n')
+        output_file.write("sil\n")
         for word in transcription.split():
             word = apply_filters(word)
-            output_file.write("sil\n")
-            for phoneme in phonetic_annotator(word):
-                if phoneme.replace(" ", ""):
-                    output_file.write(f"{phoneme}\n")
-            output_file.write("sil\n")
+            output_file.write(f"{word}\n")
+        output_file.write("sil\n")
         output_file.write(".\n")
 
     output_file.close()

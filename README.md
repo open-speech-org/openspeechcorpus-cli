@@ -133,6 +133,7 @@ To generate a word grammar use
 ```bash
 configure_htk \
     --transcription_file words.txt \
-    --project_folder htk_words
+    --project_folder htk_words \
+    --wav_folder words_wav \
     htk_words
 ```

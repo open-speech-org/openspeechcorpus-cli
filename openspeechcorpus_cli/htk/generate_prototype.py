@@ -7,22 +7,23 @@ STATE_5_PROPOSED_TRANSITION_MATRIX = (
 )
 
 
-def matrix_to_float_string(matrix):
+def matrix_to_float_string(matrix, indentation_number=9):
     returning_string = ""
     for row in matrix:
-        returning_string += f'{" ".join([str(float(x)) for x in row])}\n'
+        returning_string += f'{" "*indentation_number}{" ".join([str(float(x)) for x in row])}\n'
 
     return returning_string
 
 
-def generate_means_and_variances(states, vector_size):
+def generate_means_and_variances(states, vector_size, indentation_number=4):
     returning_string = ""
     for i in range(2, states):
-        returning_string += f"""<State> {i}
-        <Mean> {vector_size}
-            {"0.0 "*vector_size}
-        <Variance> {vector_size}
-            {"1.0 "*vector_size}"""
+        returning_string += f"""
+{" "*indentation_number}<State> {i}
+{" "*indentation_number}<Mean> {vector_size}
+{" "*indentation_number}    {"0.0 "*vector_size}
+{" "*indentation_number}<Variance> {vector_size}
+{" "*indentation_number}    {"1.0 "*vector_size}"""
 
     return returning_string
 
@@ -36,11 +37,9 @@ def execute_script(
 ):
     output_file = open(output_file, 'w+')
     output_file.write(f"""~o <VecSize> {vector_size} <{vector_type}>
-~h "prototype
+~h "proto"
 <BeginHMM>
-    <NumStates> {states}
-    {generate_means_and_variances(states, vector_size)}
+    <NumStates> {states}{generate_means_and_variances(states, vector_size)}
     <TransP> {states}
-    {matrix_to_float_string(transition_matrix)}
-<EndHMM>
+{matrix_to_float_string(transition_matrix)}<EndHMM>
 """)
