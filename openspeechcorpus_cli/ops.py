@@ -79,7 +79,7 @@ def execute_from_command_line():
     parser.add_argument(
         "--url",
         help="URL for the list API endpoint",
-        default="http://openspeechcorpus.contraslash.com/api/words/list/"
+        default=""
     )
 
     parser.add_argument(
@@ -129,18 +129,18 @@ def execute_from_command_line():
     corpus = args.get("corpus", "")
     if corpus:
         if corpus == "tales":
-            url = "http://openspeechcorpus.contraslash.com/api/tale-sentences/list/"
+            url = url or "http://openspeechcorpus.contraslash.com/api/tale-sentences/list/"
             args["text_node"] = "tale_sentence"
             args["s3_prefix"] = "https://s3.amazonaws.com/contraslash/openspeechcorpus"
-            print("Aphasia corpus selected, using URL: http://openspeechcorpus.contraslash.com/api/tale-sentences/list/")
+            print("Aphasia corpus selected, using URL: {}".format(url))
         elif corpus == "aphasia":
-            url = "http://openspeechcorpus.contraslash.com/api/words/list/"
+            url = url or "http://openspeechcorpus.contraslash.com/api/words/list/"
             args["text_node"] = "level_sentence"
-            print("Aphasia corpus selected, using URL: http://openspeechcorpus.contraslash.com/api/words/list/")
+            print("Aphasia corpus selected, using URL: {}".format(url))
         elif corpus == "words":
-            url = "http://openspeechcorpus.contraslash.com/api/isolated-words/list/"
+            url = url or "http://openspeechcorpus.contraslash.com/api/isolated-words/list/"
             args["text_node"] = "isolated_word"
-            print("Words corpus selected, using URL: http://openspeechcorpus.contraslash.com/api/isolated-words/list/")
+            print("Words corpus selected, using URL: {}".format(url))
         else:
             print("Unexisting corpus, valid options are: tales, aphasia, words")
             exit(1)
